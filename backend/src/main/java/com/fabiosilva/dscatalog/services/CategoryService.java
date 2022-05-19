@@ -19,7 +19,7 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository repository;
 
-	@Transactional(readOnly = true) // readOnly so para leitura
+	@Transactional(readOnly = true) // readOnly so para leitura.
 	public List<CategoryDTO> findAll() {
 		List<Category> list = repository.findAll();
 
