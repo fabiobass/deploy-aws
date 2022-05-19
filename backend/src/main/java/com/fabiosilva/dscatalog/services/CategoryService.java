@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fabiosilva.dscatalog.dto.CategoryDTO;
 import com.fabiosilva.dscatalog.entities.Category;
 import com.fabiosilva.dscatalog.repositories.CategoryRepository;
-import com.fabiosilva.dscatalog.services.exceptions.EntityNotFoundException;
+import com.fabiosilva.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class CategoryService {
@@ -31,7 +31,7 @@ public class CategoryService {
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = repository.findById(id);
 		// orElserThrow faz exceção personalizada  
-		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Entidade não encontrada"));
+		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada"));
 		return new CategoryDTO(entity);
 	}
 
@@ -43,4 +43,16 @@ public class CategoryService {
 		return new CategoryDTO(entity);
 	}
 
+	@Transactional
+	public CategoryDTO update(Long id, CategoryDTO dto) {
+		try {
+		Category entity = repository.getOne(id);
+		entity.setNome(dto.getName());
+		entity = repository.save(entity);
+		return new CategoryDTO(entity);
+		}
+		catch (ResourceNotFoundException e) {
+			throw new ResourceNotFoundException("id não encontrado" + id);
+		}
+	}
 }
