@@ -10,8 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fabiosilva.dscatalog.dto.CategoryDTO;
 import com.fabiosilva.dscatalog.dto.ProductDTO;
+import com.fabiosilva.dscatalog.entities.Category;
 import com.fabiosilva.dscatalog.entities.Product;
+import com.fabiosilva.dscatalog.repositories.CategoryRepository;
 import com.fabiosilva.dscatalog.repositories.ProductRepository;
 import com.fabiosilva.dscatalog.services.exceptions.DatabaseException;
 import com.fabiosilva.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -21,6 +24,9 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository repository;
+	
+	@Autowired
+	private CategoryRepository CategoryRepository;
 
 	@Transactional(readOnly = true) // readOnly so para leitura.
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
@@ -33,7 +39,7 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public ProductDTO findById(Long id) {
 		Optional<Product> obj = repository.findById(id);
-		// orElserThrow faz exceção personalizada  
+		// orElserThrow faz exceção personalizada
 		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não encontrada"));
 		return new ProductDTO(entity, entity.getCategories());
 	}
@@ -41,7 +47,7 @@ public class ProductService {
 	@Transactional
 	public ProductDTO insert(ProductDTO dto) {
 		Product entity = new Product();
-		//entity.setName(dto.getName());
+		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
 	}
@@ -49,13 +55,12 @@ public class ProductService {
 	@Transactional
 	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
-		@SuppressWarnings("deprecation")
-		Product entity = repository.getOne(id);
-		//entity.setName(dto.getName());
-		entity = repository.save(entity);
-		return new ProductDTO(entity);
-		}
-		catch (ResourceNotFoundException e) {
+			@SuppressWarnings("deprecation")
+			Product entity = repository.getOne(id);
+			copyDtoToEntity(dto, entity);
+			entity = repository.save(entity);
+			return new ProductDTO(entity);
+		} catch (ResourceNotFoundException e) {
 			throw new ResourceNotFoundException("id não encontrado" + id);
 		}
 	}
@@ -65,10 +70,24 @@ public class ProductService {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("id não encontrado " + id);
-		}
-		catch (DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Violação de integridade");
 		}
+
+	}
+
+	private void copyDtoToEntity(ProductDTO dto, Product entity) {
+		entity.setName(dto.getName());
+		entity.setDescription(dto.getDescription());
+		entity.setDate(dto.getDate());
+		entity.setImgUrl(dto.getImgUrl());
+		entity.setPrice(dto.getPrice());
 		
+		entity.getCategories().clear();
+		for (CategoryDTO catDto : dto.getCategories()) {
+			@SuppressWarnings("deprecation")
+			Category category = CategoryRepository.getOne(catDto.getId());
+			entity.getCategories().add(category);
+		}
 	}
 }
