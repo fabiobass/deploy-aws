@@ -1,23 +1,33 @@
 package com.fabiosilva.dscatalog.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "tb_category")
-public class Category implements Serializable{
+public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE") // horário UTC
+	private Instant createAt;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE") // horário UTC
+	private Instant updateAt;
 
 	public Category() {
 	}
@@ -35,12 +45,30 @@ public class Category implements Serializable{
 		this.id = id;
 	}
 
-	public String getNome() {
+	public String getName() {
 		return name;
 	}
 
-	public void setNome(String nome) {
-		this.name = nome;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Instant getCreateAt() {
+		return createAt;
+	}
+
+	public Instant getUpdatecreateAt() {
+		return updateAt;
+	}
+	
+	@PrePersist
+	public void prePersist() {
+		createAt = Instant.now();
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		updateAt = Instant.now();
 	}
 
 	@Override
