@@ -2,6 +2,8 @@ package com.fabiosilva.dscatalog.services;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -26,7 +28,7 @@ public class ProductService {
 	private ProductRepository repository;
 	
 	@Autowired
-	private CategoryRepository CategoryRepository;
+	private CategoryRepository categoryRepository;
 
 	@Transactional(readOnly = true) // readOnly so para leitura.
 	public Page<ProductDTO> findAllPaged(Pageable pageable) {
@@ -60,10 +62,11 @@ public class ProductService {
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new ProductDTO(entity);
-		} catch (ResourceNotFoundException e) {
+		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("id não encontrado" + id);
 		}
 	}
+
 
 	public void delete(Long id) {
 		try {
@@ -86,7 +89,7 @@ public class ProductService {
 		entity.getCategories().clear();
 		for (CategoryDTO catDto : dto.getCategories()) {
 			@SuppressWarnings("deprecation")
-			Category category = CategoryRepository.getOne(catDto.getId());
+			Category category = categoryRepository.getOne(catDto.getId());
 			entity.getCategories().add(category);
 		}
 	}
