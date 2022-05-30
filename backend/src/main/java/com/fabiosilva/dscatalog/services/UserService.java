@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fabiosilva.dscatalog.dto.RoleDTO;
 import com.fabiosilva.dscatalog.dto.UserDTO;
 import com.fabiosilva.dscatalog.dto.UserInsertDTO;
+import com.fabiosilva.dscatalog.dto.UserUpdateDTO;
 import com.fabiosilva.dscatalog.entities.Role;
 import com.fabiosilva.dscatalog.entities.User;
 import com.fabiosilva.dscatalog.repositories.RoleRepository;
@@ -60,7 +61,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO update(Long id, UserDTO dto) {
+	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
 			@SuppressWarnings("deprecation")
 			User entity = repository.getOne(id);
