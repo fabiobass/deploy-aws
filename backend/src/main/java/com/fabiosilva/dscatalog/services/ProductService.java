@@ -57,7 +57,6 @@ public class ProductService {
 	@Transactional
 	public ProductDTO update(Long id, ProductDTO dto) {
 		try {
-			@SuppressWarnings("deprecation")
 			Product entity = repository.getOne(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
@@ -88,7 +87,6 @@ public class ProductService {
 		
 		entity.getCategories().clear();
 		for (CategoryDTO catDto : dto.getCategories()) {
-			@SuppressWarnings("deprecation")
 			Category category = categoryRepository.getOne(catDto.getId());
 			entity.getCategories().add(category);
 		}
