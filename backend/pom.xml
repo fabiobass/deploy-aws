@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.devsuperior</groupId>
-	<artifactId>dscatalog</artifactId>
+	<artifactId>fabiosilva</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>dscatalog</name>
 	<description>DSCatalog Bootcamp DevSuperior</description>
