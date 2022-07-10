@@ -1,11 +1,11 @@
 import './styles.css';
 
-const ProductPrice = () =>{
+const ProductPrice = () => {
 
     return (
-        <div className='product-prive-container'>
+        <div className="product-price-container">
             <span>R$</span>
-            <h3>2345,00</h3>
+            <h3>2345.67</h3>
         </div>
     );
 }
