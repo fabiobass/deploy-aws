@@ -1,13 +1,10 @@
 import './assets/styles/custom.scss';
 import './App.css';
-import Navbar from 'components/Navbar';
+import Home from 'pages/Home';
 
 function App() {
   return (
-    <>
-    <Navbar />
-    <h1>Em breve um site Erica Festas</h1>
-    </>
+    <Home />
   );
 }
 
